@@ -133,6 +133,44 @@
   color: var(--text-color);
 }
 
+.time-picker-row {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.time-picker-row input {
+  width: 84px;
+}
+
+.time-separator {
+  color: var(--text-color);
+  font-weight: 700;
+}
+
+.ampm-toggle {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.ampm-button {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  padding: 0.4rem 0.7rem;
+  cursor: pointer;
+  min-width: 52px;
+}
+
+.ampm-button-active {
+  background-color: var(--accent-bg);
+  border-color: var(--accent-border);
+  color: var(--accent-text);
+  font-weight: 600;
+}
+
 .schedule-add-button {
   width: fit-content;
   margin-top: 0.5rem;
@@ -212,5 +250,9 @@
 
   .schedule-actions {
     align-items: flex-start;
+  }
+
+  .time-picker-row input {
+    width: 76px;
   }
 }

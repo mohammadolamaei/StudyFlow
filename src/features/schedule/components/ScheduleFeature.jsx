@@ -120,16 +120,101 @@ function buildCalendarDays(monthStartDate) {
   return calendarDays;
 }
 
+function parseTimeToSortValue(timeText) {
+  if (!timeText) {
+    return Number.MAX_SAFE_INTEGER;
+  }
+
+  const ampmMatch = String(timeText).trim().match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+
+  if (ampmMatch) {
+    const hour12 = Number(ampmMatch[1]);
+    const minute = Number(ampmMatch[2]);
+    const period = ampmMatch[3].toUpperCase();
+
+    if (hour12 < 1 || hour12 > 12 || minute < 0 || minute > 59) {
+      return Number.MAX_SAFE_INTEGER;
+    }
+
+    let hour24 = hour12 % 12;
+
+    if (period === 'PM') {
+      hour24 += 12;
+    }
+
+    return hour24 * 60 + minute;
+  }
+
+  const hhmmMatch = String(timeText).trim().match(/^(\d{1,2}):(\d{2})$/);
+
+  if (hhmmMatch) {
+    const hour = Number(hhmmMatch[1]);
+    const minute = Number(hhmmMatch[2]);
+
+    if (hour < 0 || hour > 23 || minute < 0 || minute > 59) {
+      return Number.MAX_SAFE_INTEGER;
+    }
+
+    return hour * 60 + minute;
+  }
+
+  return Number.MAX_SAFE_INTEGER;
+}
+
+function compareDateAndTime(first, second) {
+  const dateCompare = String(first.date || '').localeCompare(String(second.date || ''));
+
+  if (dateCompare !== 0) {
+    return dateCompare;
+  }
+
+  return parseTimeToSortValue(first.time) - parseTimeToSortValue(second.time);
+}
+
+function buildTimeLabel(hourValue, minuteValue, periodValue) {
+  const hour = String(hourValue || '').padStart(2, '0');
+  const minute = String(minuteValue || '').padStart(2, '0');
+  const period = periodValue === 'PM' ? 'PM' : 'AM';
+
+  return `${hour}:${minute} ${period}`;
+}
+
+function sanitizeHour(value) {
+  const parsed = Number(value);
+
+  if (Number.isNaN(parsed)) {
+    return '';
+  }
+
+  const safe = Math.max(1, Math.min(12, parsed));
+  return String(safe).padStart(2, '0');
+}
+
+function sanitizeMinute(value) {
+  const parsed = Number(value);
+
+  if (Number.isNaN(parsed)) {
+    return '';
+  }
+
+  const safe = Math.max(0, Math.min(59, parsed));
+  return String(safe).padStart(2, '0');
+}
+
 function ScheduleFeature() {
   const initialSchedule = useMemo(() => loadSchedule(), []);
   const [schedule, setSchedule] = useState(initialSchedule);
 
   const [selectedDay, setSelectedDay] = useState('saturday');
   const [className, setClassName] = useState('');
-  const [classTime, setClassTime] = useState('');
+  const [classHour, setClassHour] = useState('08');
+  const [classMinute, setClassMinute] = useState('00');
+  const [classPeriod, setClassPeriod] = useState('AM');
 
   const [eventTitle, setEventTitle] = useState('');
-  const [eventTime, setEventTime] = useState('');
+  const [eventHour, setEventHour] = useState('08');
+  const [eventMinute, setEventMinute] = useState('00');
+  const [eventPeriod, setEventPeriod] = useState('AM');
 
   const today = useMemo(() => new Date(), []);
   const [calendarMonthStart, setCalendarMonthStart] = useState(findPersianMonthStart(today));
@@ -143,27 +228,29 @@ function ScheduleFeature() {
     event.preventDefault();
 
     const cleanName = className.trim();
+    const timeLabel = buildTimeLabel(classHour, classMinute, classPeriod);
 
-    if (!cleanName || !classTime) {
+    if (!cleanName || !classHour || !classMinute) {
       return;
     }
 
     const newClass = {
       id: Date.now(),
       title: cleanName,
-      time: classTime,
+      time: timeLabel,
     };
 
     setSchedule((previousSchedule) => ({
       ...previousSchedule,
       weeklyClasses: {
         ...previousSchedule.weeklyClasses,
-        [selectedDay]: [...previousSchedule.weeklyClasses[selectedDay], newClass],
+        [selectedDay]: [...previousSchedule.weeklyClasses[selectedDay], newClass].sort(
+          (first, second) => parseTimeToSortValue(first.time) - parseTimeToSortValue(second.time)
+        ),
       },
     }));
 
     setClassName('');
-    setClassTime('');
   }
 
   function handleDeleteClass(classId) {
@@ -182,8 +269,9 @@ function ScheduleFeature() {
     event.preventDefault();
 
     const cleanTitle = eventTitle.trim();
+    const timeLabel = buildTimeLabel(eventHour, eventMinute, eventPeriod);
 
-    if (!cleanTitle || !eventTime || !selectedDateKey) {
+    if (!cleanTitle || !selectedDateKey || !eventHour || !eventMinute) {
       return;
     }
 
@@ -191,20 +279,15 @@ function ScheduleFeature() {
       id: Date.now(),
       title: cleanTitle,
       date: selectedDateKey,
-      time: eventTime,
+      time: timeLabel,
     };
 
     setSchedule((previousSchedule) => ({
       ...previousSchedule,
-      dateSchedules: [...previousSchedule.dateSchedules, newEvent].sort((first, second) => {
-        const firstValue = `${first.date}T${first.time}`;
-        const secondValue = `${second.date}T${second.time}`;
-        return firstValue.localeCompare(secondValue);
-      }),
+      dateSchedules: [...previousSchedule.dateSchedules, newEvent].sort(compareDateAndTime),
     }));
 
     setEventTitle('');
-    setEventTime('');
   }
 
   function handleDeleteDateEvent(eventId) {
@@ -222,7 +305,13 @@ function ScheduleFeature() {
     setCalendarMonthStart((previousMonthStart) => getNextPersianMonthStart(previousMonthStart));
   }
 
-  const selectedClasses = schedule.weeklyClasses[selectedDay] || [];
+  const selectedClasses = useMemo(
+    () =>
+      (schedule.weeklyClasses[selectedDay] || [])
+        .slice()
+        .sort((first, second) => parseTimeToSortValue(first.time) - parseTimeToSortValue(second.time)),
+    [schedule.weeklyClasses, selectedDay]
+  );
 
   const calendarDays = useMemo(() => buildCalendarDays(calendarMonthStart), [calendarMonthStart]);
 
@@ -230,7 +319,7 @@ function ScheduleFeature() {
     () =>
       (schedule.dateSchedules || [])
         .filter((item) => item.date === selectedDateKey)
-        .sort((first, second) => first.time.localeCompare(second.time)),
+        .sort((first, second) => parseTimeToSortValue(first.time) - parseTimeToSortValue(second.time)),
     [schedule.dateSchedules, selectedDateKey]
   );
 
@@ -262,13 +351,42 @@ function ScheduleFeature() {
             onChange={(event) => setClassName(event.target.value)}
           />
 
-          <label htmlFor="classTime">ساعت کلاس</label>
-          <input
-            id="classTime"
-            type="time"
-            value={classTime}
-            onChange={(event) => setClassTime(event.target.value)}
-          />
+          <label>ساعت کلاس</label>
+          <div className="time-picker-row">
+            <input
+              type="number"
+              min="1"
+              max="12"
+              placeholder="ساعت"
+              value={classHour}
+              onChange={(event) => setClassHour(sanitizeHour(event.target.value))}
+            />
+            <span className="time-separator">:</span>
+            <input
+              type="number"
+              min="0"
+              max="59"
+              placeholder="دقیقه"
+              value={classMinute}
+              onChange={(event) => setClassMinute(sanitizeMinute(event.target.value))}
+            />
+            <div className="ampm-toggle">
+              <button
+                type="button"
+                className={classPeriod === 'AM' ? 'ampm-button ampm-button-active' : 'ampm-button'}
+                onClick={() => setClassPeriod('AM')}
+              >
+                AM
+              </button>
+              <button
+                type="button"
+                className={classPeriod === 'PM' ? 'ampm-button ampm-button-active' : 'ampm-button'}
+                onClick={() => setClassPeriod('PM')}
+              >
+                PM
+              </button>
+            </div>
+          </div>
 
           <button type="submit" className="schedule-add-button">
             افزودن کلاس هفتگی
@@ -358,13 +476,42 @@ function ScheduleFeature() {
             onChange={(event) => setEventTitle(event.target.value)}
           />
 
-          <label htmlFor="eventTime">ساعت</label>
-          <input
-            id="eventTime"
-            type="time"
-            value={eventTime}
-            onChange={(event) => setEventTime(event.target.value)}
-          />
+          <label>ساعت</label>
+          <div className="time-picker-row">
+            <input
+              type="number"
+              min="1"
+              max="12"
+              placeholder="ساعت"
+              value={eventHour}
+              onChange={(event) => setEventHour(sanitizeHour(event.target.value))}
+            />
+            <span className="time-separator">:</span>
+            <input
+              type="number"
+              min="0"
+              max="59"
+              placeholder="دقیقه"
+              value={eventMinute}
+              onChange={(event) => setEventMinute(sanitizeMinute(event.target.value))}
+            />
+            <div className="ampm-toggle">
+              <button
+                type="button"
+                className={eventPeriod === 'AM' ? 'ampm-button ampm-button-active' : 'ampm-button'}
+                onClick={() => setEventPeriod('AM')}
+              >
+                AM
+              </button>
+              <button
+                type="button"
+                className={eventPeriod === 'PM' ? 'ampm-button ampm-button-active' : 'ampm-button'}
+                onClick={() => setEventPeriod('PM')}
+              >
+                PM
+              </button>
+            </div>
+          </div>
 
           <button type="submit" className="schedule-add-button">
             افزودن برنامه تاریخ‌دار

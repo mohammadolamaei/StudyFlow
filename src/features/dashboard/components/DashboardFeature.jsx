@@ -47,6 +47,57 @@ function formatDateKeyForUi(dateKey) {
   return `${toFaNumber(year)}/${toFaNumber(month)}/${toFaNumber(day)}`;
 }
 
+function parseTimeToSortValue(timeText) {
+  if (!timeText) {
+    return Number.MAX_SAFE_INTEGER;
+  }
+
+  const ampmMatch = String(timeText).trim().match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+
+  if (ampmMatch) {
+    const hour12 = Number(ampmMatch[1]);
+    const minute = Number(ampmMatch[2]);
+    const period = ampmMatch[3].toUpperCase();
+
+    if (hour12 < 1 || hour12 > 12 || minute < 0 || minute > 59) {
+      return Number.MAX_SAFE_INTEGER;
+    }
+
+    let hour24 = hour12 % 12;
+
+    if (period === 'PM') {
+      hour24 += 12;
+    }
+
+    return hour24 * 60 + minute;
+  }
+
+  const hhmmMatch = String(timeText).trim().match(/^(\d{1,2}):(\d{2})$/);
+
+  if (hhmmMatch) {
+    const hour = Number(hhmmMatch[1]);
+    const minute = Number(hhmmMatch[2]);
+
+    if (hour < 0 || hour > 23 || minute < 0 || minute > 59) {
+      return Number.MAX_SAFE_INTEGER;
+    }
+
+    return hour * 60 + minute;
+  }
+
+  return Number.MAX_SAFE_INTEGER;
+}
+
+function compareDateAndTime(first, second) {
+  const dateCompare = String(first.date || '').localeCompare(String(second.date || ''));
+
+  if (dateCompare !== 0) {
+    return dateCompare;
+  }
+
+  return parseTimeToSortValue(first.time) - parseTimeToSortValue(second.time);
+}
+
 function getElapsedSeconds(timerState) {
   if (!timerState || timerState.mode !== 'study' || !timerState.isRunning || !timerState.endTimestamp) {
     return 0;
@@ -114,11 +165,7 @@ function DashboardFeature() {
 
     const monthlyCalendarItems = (schedule.dateSchedules || [])
       .filter((item) => String(item.date || '').startsWith(monthPrefix))
-      .sort((first, second) => {
-        const firstValue = `${first.date}T${first.time}`;
-        const secondValue = `${second.date}T${second.time}`;
-        return firstValue.localeCompare(secondValue);
-      })
+      .sort(compareDateAndTime)
       .slice(0, 8);
 
     const classTrackerBoard = weekOrder.map((dayKey) => {
@@ -129,7 +176,7 @@ function DashboardFeature() {
         dayLabel: dayLabelByKey[dayKey],
         classes: classes
           .slice()
-          .sort((first, second) => first.time.localeCompare(second.time)),
+          .sort((first, second) => parseTimeToSortValue(first.time) - parseTimeToSortValue(second.time)),
       };
     });
 
@@ -212,7 +259,7 @@ function DashboardFeature() {
       </div>
 
       <div className="dashboard-card dashboard-wide">
-        <h3>برد ردیاب کلاس هفتگی</h3>
+        <h3>ردیاب کلاس هفتگی</h3>
         <div className="dashboard-class-board">
           {dashboardData.classTrackerBoard.map((day) => (
             <div key={day.dayKey} className="dashboard-class-column">
