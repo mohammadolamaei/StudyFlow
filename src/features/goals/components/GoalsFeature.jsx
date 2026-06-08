@@ -41,7 +41,7 @@ function formatDateKeyForUi(dateKey) {
     return `تاریخ هدف: ${dateKey}`;
   }
 
-  const toFaNumber = (value) => new Intl.NumberFormat('fa-IR').format(Number(value));
+  const toFaNumber = (value) => new Intl.NumberFormat('fa-IR', { useGrouping: false }).format(Number(value));
 
   return `تاریخ هدف: ${toFaNumber(year)}/${toFaNumber(month)}/${toFaNumber(day)}`;
 }

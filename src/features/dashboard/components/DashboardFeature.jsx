@@ -42,7 +42,7 @@ function formatDateKeyForUi(dateKey) {
     return dateKey;
   }
 
-  const toFaNumber = (value) => new Intl.NumberFormat('fa-IR').format(Number(value));
+  const toFaNumber = (value) => new Intl.NumberFormat('fa-IR', { useGrouping: false }).format(Number(value));
 
   return `${toFaNumber(year)}/${toFaNumber(month)}/${toFaNumber(day)}`;
 }
@@ -238,8 +238,8 @@ function DashboardFeature() {
       <div className="dashboard-card dashboard-wide">
         <h3>برنامه‌های تقویم ماه جاری</h3>
         <p className="dashboard-hint dashboard-hint-spaced">
-          {new Intl.NumberFormat('fa-IR').format(Number(dashboardData.currentYear))}/
-          {new Intl.NumberFormat('fa-IR').format(Number(dashboardData.currentMonth))}
+          {new Intl.NumberFormat('fa-IR', { useGrouping: false }).format(Number(dashboardData.currentYear))}/
+          {new Intl.NumberFormat('fa-IR', { useGrouping: false }).format(Number(dashboardData.currentMonth))}
         </p>
 
         {dashboardData.monthlyCalendarItems.length === 0 ? (
