@@ -1,0 +1,94 @@
+.notes-card {
+  max-width: 760px;
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+.notes-form {
+  display: grid;
+  gap: 0.45rem;
+  margin-bottom: 1rem;
+}
+
+.notes-form label {
+  font-size: 0.9rem;
+  color: var(--text-color);
+}
+
+.notes-form input,
+.notes-form textarea {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.55rem 0.65rem;
+  font: inherit;
+  background-color: var(--input-bg);
+  color: var(--text-color);
+}
+
+.note-add-button {
+  width: fit-content;
+  margin-top: 0.5rem;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid var(--accent-border);
+  border-radius: 8px;
+  background-color: var(--accent-bg);
+  color: var(--accent-text);
+  cursor: pointer;
+}
+
+.notes-empty,
+.note-date {
+  color: var(--muted-text);
+}
+
+.notes-list {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.note-item {
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 0.8rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.note-title {
+  font-size: 1rem;
+  color: var(--text-color);
+  margin-bottom: 0.25rem;
+}
+
+.note-date {
+  font-size: 0.85rem;
+  margin-bottom: 0.35rem;
+}
+
+.note-content {
+  color: var(--text-color);
+  white-space: pre-wrap;
+}
+
+.note-delete-button {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--button-bg);
+  color: var(--danger-text);
+  padding: 0.4rem 0.75rem;
+  cursor: pointer;
+  height: fit-content;
+}
+
+@media (max-width: 640px) {
+  .notes-card {
+    padding: 1rem;
+  }
+
+  .note-item {
+    flex-direction: column;
+  }
+}

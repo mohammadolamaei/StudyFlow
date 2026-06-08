@@ -1,0 +1,17 @@
+.about-card {
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: grid;
+  gap: 0.9rem;
+  line-height: 1.8;
+}
+
+.about-card h3 {
+  font-size: 1.2rem;
+}
+
+.about-card p {
+  color: var(--text-color);
+}

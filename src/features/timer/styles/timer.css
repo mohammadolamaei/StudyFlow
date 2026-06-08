@@ -1,0 +1,101 @@
+.timer-card {
+  max-width: 520px;
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+.timer-modes {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.mode-button {
+  border: 1px solid var(--border-color);
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  padding: 0.45rem 0.85rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.mode-button-active {
+  background-color: var(--accent-bg);
+  border-color: var(--accent-border);
+  color: var(--accent-text);
+  font-weight: 600;
+}
+
+.timer-label {
+  font-size: 0.95rem;
+  color: var(--muted-text);
+  margin-bottom: 0.25rem;
+}
+
+.timer-display {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--text-color);
+  margin-bottom: 1rem;
+}
+
+.timer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.timer-action-button {
+  border: 1px solid var(--border-color);
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  padding: 0.5rem 0.9rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.timer-action-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.timer-inputs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.timer-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+  color: var(--text-color);
+}
+
+.timer-input-group input {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.5rem 0.6rem;
+  background-color: var(--input-bg);
+  color: var(--text-color);
+}
+
+.timer-summary {
+  color: var(--muted-text);
+  font-size: 0.95rem;
+}
+
+@media (max-width: 560px) {
+  .timer-card {
+    padding: 1rem;
+  }
+
+  .timer-inputs {
+    grid-template-columns: 1fr;
+  }
+}

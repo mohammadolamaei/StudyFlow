@@ -1,0 +1,121 @@
+.goals-card {
+  max-width: 720px;
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+.goals-form {
+  display: grid;
+  gap: 0.45rem;
+  margin-bottom: 1rem;
+}
+
+.goals-form label {
+  font-size: 0.9rem;
+  color: var(--text-color);
+}
+
+.goals-form input {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.55rem 0.65rem;
+  background-color: var(--input-bg);
+  color: var(--text-color);
+}
+
+.goals-date-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  gap: 0.5rem;
+}
+
+.goal-add-button {
+  width: fit-content;
+  margin-top: 0.5rem;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid var(--accent-border);
+  border-radius: 8px;
+  background-color: var(--accent-bg);
+  color: var(--accent-text);
+  cursor: pointer;
+}
+
+.goals-summary,
+.goals-empty,
+.goal-date,
+.goal-title-done {
+  color: var(--muted-text);
+}
+
+.goals-summary {
+  display: flex;
+  gap: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.goals-list {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.goal-item {
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 0.8rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.goal-title {
+  font-size: 1rem;
+  color: var(--text-color);
+  margin-bottom: 0.3rem;
+}
+
+.goal-title-done {
+  text-decoration: line-through;
+}
+
+.goal-date {
+  font-size: 0.9rem;
+}
+
+.goal-actions {
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.goal-action-button {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  padding: 0.4rem 0.75rem;
+  cursor: pointer;
+}
+
+.goal-delete-button {
+  color: var(--danger-text);
+}
+
+@media (max-width: 640px) {
+  .goals-card {
+    padding: 1rem;
+  }
+
+  .goals-date-inputs {
+    grid-template-columns: 1fr;
+  }
+
+  .goal-item {
+    flex-direction: column;
+  }
+
+  .goal-actions {
+    align-items: flex-start;
+  }
+}
