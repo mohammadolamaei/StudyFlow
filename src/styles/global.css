@@ -31,29 +31,29 @@
 }
 
 :root {
-  --bg-color: #f2f4f7;
+  --bg-color: #eef4ff;
   --surface-color: #ffffff;
-  --text-color: #1f2937;
-  --muted-text: #4b5563;
-  --border-color: #e5e7eb;
-  --nav-bg: #1f2937;
-  --nav-text: #f9fafb;
-  --nav-subtitle: #d1d5db;
-  --sidebar-link: #374151;
-  --sidebar-hover: #f3f4f6;
-  --sidebar-active-bg: #e0e7ff;
-  --sidebar-active-text: #312e81;
+  --text-color: #0f172a;
+  --muted-text: #475569;
+  --border-color: #d5e0f5;
+  --nav-bg: #1f2f56;
+  --nav-text: #f8fafc;
+  --nav-subtitle: #dbe7ff;
+  --sidebar-link: #334155;
+  --sidebar-hover: #edf3ff;
+  --sidebar-active-bg: #dbeafe;
+  --sidebar-active-text: #1d4ed8;
   --input-bg: #ffffff;
   --button-bg: #ffffff;
-  --button-text: #1f2937;
-  --accent-bg: #eef2ff;
-  --accent-border: #c7d2fe;
-  --accent-text: #312e81;
-  --danger-text: #991b1b;
-  --progress-track: #e5e7eb;
-  --progress-fill: #6366f1;
+  --button-text: #0f172a;
+  --accent-bg: #e0eaff;
+  --accent-border: #bcd0ff;
+  --accent-text: #1d4ed8;
+  --danger-text: #b42318;
+  --progress-track: #dbe7ff;
+  --progress-fill: #4f46e5;
   --theme-icon-color: #f8fafc;
-  --theme-icon-bg: rgba(255, 255, 255, 0.08);
+  --theme-icon-bg: rgba(255, 255, 255, 0.14);
 }
 
 body[data-theme='dark'] {
@@ -94,6 +94,48 @@ body {
   color: var(--text-color);
   direction: rtl;
   text-align: right;
+}
+
+body:not([data-theme='dark']) {
+  background-image: radial-gradient(circle at top right, rgba(79, 70, 229, 0.1), transparent 46%);
+}
+
+body:not([data-theme='dark']) .timer-card,
+body:not([data-theme='dark']) .goals-card,
+body:not([data-theme='dark']) .notes-card,
+body:not([data-theme='dark']) .schedule-card,
+body:not([data-theme='dark']) .dashboard-card,
+body:not([data-theme='dark']) .stats-card,
+body:not([data-theme='dark']) .about-card {
+  border-color: #d6e3ff;
+  box-shadow: 0 10px 26px rgba(37, 99, 235, 0.08);
+}
+
+body:not([data-theme='dark']) .mode-button,
+body:not([data-theme='dark']) .timer-action-button,
+body:not([data-theme='dark']) .goal-action-button,
+body:not([data-theme='dark']) .goal-add-button,
+body:not([data-theme='dark']) .note-add-button,
+body:not([data-theme='dark']) .note-delete-button,
+body:not([data-theme='dark']) .schedule-add-button,
+body:not([data-theme='dark']) .schedule-action-button,
+body:not([data-theme='dark']) .day-tab,
+body:not([data-theme='dark']) .ampm-button,
+body:not([data-theme='dark']) .calendar-nav-btn,
+body:not([data-theme='dark']) .theme-toggle {
+  transition: all 0.2s ease;
+}
+
+body:not([data-theme='dark']) .mode-button:hover,
+body:not([data-theme='dark']) .timer-action-button:hover,
+body:not([data-theme='dark']) .goal-action-button:hover,
+body:not([data-theme='dark']) .note-delete-button:hover,
+body:not([data-theme='dark']) .schedule-action-button:hover,
+body:not([data-theme='dark']) .day-tab:hover,
+body:not([data-theme='dark']) .ampm-button:hover,
+body:not([data-theme='dark']) .calendar-nav-btn:hover {
+  border-color: #b4c8fb;
+  background-color: #edf3ff;
 }
 
 a {
